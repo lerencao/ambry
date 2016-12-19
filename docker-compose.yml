@@ -1,0 +1,34 @@
+version: "2"
+services:
+  ambry-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ambry-server:build
+    ports:
+      - 6670
+      - 9090
+    # env:
+     # - JMX_OPTS:
+     # -Dcom.sun.management.jmxremote.rmi.port=9090 \
+     # -Dcom.sun.management.jmxremote=true \
+     # -Dcom.sun.management.jmxremote.port=9090  \
+     # -Dcom.sun.management.jmxremote.ssl=false \
+     # -Dcom.sun.management.jmxremote.authenticate=false \
+     # -Dcom.sun.management.jmxremote.local.only=false \
+     # -Djava.rmi.server.hostname=192.168.1.7 \
+    volumes:
+      - ./config:/ambry/config
+      - ./data:/data
+  ambry-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: ambry-frontend:build
+    ports:
+      - 1174:1174
+      - 9090
+    volumes:
+      - ./config:/ambry/config
+    depends_on:
+      - ambry-server
